@@ -1,165 +1,176 @@
-# Deep Learning with Sigmoid (2 Hidden Layers) - Step by Step (No Simplification)
+# Deep Learning from Scratch: Sigmoid Network with 2 Hidden Layers
 
-## Dataset
+A step-by-step, fully expanded (no simplifications) derivation and
+computation of forward propagation and backpropagation for a feedforward
+neural network using **sigmoid activation** and **Mean Squared Error
+(MSE)** loss.
+
+------------------------------------------------------------------------
+
+## 1. Problem Setup
+
+**Dataset (single sample for clarity)**
 
   x1   x2   y
   ---- ---- ---
   1    1    1
 
+**Objective**: Learn parameters to predict ( y `\in `{=tex}{0,1} ) from
+inputs (x_1, x_2).
+
 ------------------------------------------------------------------------
 
-## Arsitektur Model
+## 2. Model Architecture
 
--   Input Layer: 2 neuron
--   Hidden Layer 1: 2 neuron (Sigmoid)
--   Hidden Layer 2: 2 neuron (Sigmoid)
+-   Input layer: 2 features
+-   Hidden Layer 1: 2 neurons (Sigmoid)
+-   Hidden Layer 2: 2 neurons (Sigmoid)
 -   Output Layer: 1 neuron (Sigmoid)
 
 ------------------------------------------------------------------------
 
-## Inisialisasi Parameter
+## 3. Notation
+
+-   Linear: ( z = W a + b )
+-   Activation (sigmoid): ( a = `\sigma`{=tex}(z) =
+    `\frac{1}{1 + e^{-z}}`{=tex} )
+-   Sigmoid derivative: ( `\sigma`{=tex}'(z) = a(1-a) )
+-   Loss (MSE): ( L = `\frac{1}{2}`{=tex}(`\hat{y}`{=tex} - y)\^2 )
+
+------------------------------------------------------------------------
+
+## 4. Parameter Initialization
 
 ### Hidden Layer 1
 
-w1 = 0.5, w2 = 0.4\
-w3 = 0.3, w4 = 0.2\
-b1 = 0, b2 = 0
+-   (w_1=0.5,; w_2=0.4)
+-   (w_3=0.3,; w_4=0.2)
+-   (b_1=0,; b_2=0)
 
 ### Hidden Layer 2
 
-w5 = 0.6, w6 = 0.7\
-w7 = 0.8, w8 = 0.9\
-b3 = 0, b4 = 0
+-   (w_5=0.6,; w_6=0.7)
+-   (w_7=0.8,; w_8=0.9)
+-   (b_3=0,; b_4=0)
 
 ### Output Layer
 
-w9 = 0.5, w10 = 0.6\
-b5 = 0
+-   (w_9=0.5,; w\_{10}=0.6)
+-   (b_5=0)
 
-Learning rate = 0.1
+Learning rate: ( `\alpha `{=tex}= 0.1 )
 
 ------------------------------------------------------------------------
 
-## Forward Pass
+## 5. Forward Propagation
 
 ### Hidden Layer 1
 
-z1_1 = (0.5)(1) + (0.4)(1) = 0.9\
-a1_1 = 1 / (1 + e\^(-0.9)) = 0.71
+\[ z\_{1}\^{(1)} = 0.5(1) + 0.4(1) = 0.9, `\quad `{=tex}a\_{1}\^{(1)} =
+`\sigma`{=tex}(0.9) `\approx 0.71`{=tex} \] \[ z\_{2}\^{(1)} = 0.3(1) +
+0.2(1) = 0.5, `\quad `{=tex}a\_{2}\^{(1)} = `\sigma`{=tex}(0.5)
+`\approx 0.62`{=tex} \]
 
-z1_2 = (0.3)(1) + (0.2)(1) = 0.5\
-a1_2 = 1 / (1 + e\^(-0.5)) = 0.62
+### Hidden Layer 2
+
+\[ z\_{1}\^{(2)} = 0.6(0.71) + 0.7(0.62) = 0.86,
+`\quad `{=tex}a\_{1}\^{(2)} = `\sigma`{=tex}(0.86) `\approx 0.70`{=tex}
+\] \[ z\_{2}\^{(2)} = 0.8(0.71) + 0.9(0.62) = 1.09,
+`\quad `{=tex}a\_{2}\^{(2)} = `\sigma`{=tex}(1.09) `\approx 0.75`{=tex}
+\]
+
+### Output Layer
+
+\[ z\^{(3)} = 0.5(0.70) + 0.6(0.75) = 0.80,
+`\quad `{=tex}`\hat{y}`{=tex} = a\^{(3)} = `\sigma`{=tex}(0.80)
+`\approx 0.69`{=tex} \]
+
+------------------------------------------------------------------------
+
+## 6. Loss
+
+\[ L = `\frac{1}{2}`{=tex}(`\hat{y}`{=tex} - y)\^2 =
+`\frac{1}{2}`{=tex}(0.69 - 1)\^2 `\approx 0.048`{=tex} \]
+
+------------------------------------------------------------------------
+
+## 7. Backpropagation (Full Chain Rule)
+
+### Output Layer
+
+\[ `\frac{\partial L}{\partial a^{(3)}}`{=tex} = (`\hat{y}`{=tex} - y) =
+-0.31 \]
+
+\[ `\frac{\partial a^{(3)}}{\partial z^{(3)}}`{=tex} =
+a^{(3)}(1-a^{(3)}) = 0.69(0.31) = 0.2139 \]
+
+\[ `\delta`{=tex}\^{(3)} = `\frac{\partial L}{\partial z^{(3)}}`{=tex} =
+-0.31 `\times 0.2139`{=tex} = -0.0663 \]
+
+Gradients: \[ `\frac{\partial L}{\partial w_9}`{=tex} =
+`\delta`{=tex}\^{(3)} a\_{1}\^{(2)} = -0.0663(0.70) = -0.0464 \] \[
+`\frac{\partial L}{\partial w_{10}}`{=tex} = `\delta`{=tex}\^{(3)}
+a\_{2}\^{(2)} = -0.0663(0.75) = -0.0497 \]
 
 ------------------------------------------------------------------------
 
 ### Hidden Layer 2
 
-z2_1 = (0.6)(0.71) + (0.7)(0.62) = 0.86\
-a2_1 = 1 / (1 + e\^(-0.86)) = 0.70
+\[ `\delta`{=tex}*{1}\^{(2)} = `\delta`{=tex}\^{(3)} w_9
+`\cdot `{=tex}a*{1}^{(2)}(1-a\_{1}^{(2)}) = (-0.0663)(0.5)(0.70)(0.30) =
+-0.00696 \] \[ `\delta`{=tex}*{2}\^{(2)} = `\delta`{=tex}\^{(3)} w*{10}
+`\cdot `{=tex}a\_{2}^{(2)}(1-a\_{2}^{(2)}) = (-0.0663)(0.6)(0.75)(0.25)
+= -0.00746 \]
 
-z2_2 = (0.8)(0.71) + (0.9)(0.62) = 1.09\
-a2_2 = 1 / (1 + e\^(-1.09)) = 0.75
-
-------------------------------------------------------------------------
-
-### Output Layer
-
-z3 = (0.5)(0.70) + (0.6)(0.75) = 0.80\
-a3 = 1 / (1 + e\^(-0.80)) = 0.69
-
-Prediction = 0.69
-
-------------------------------------------------------------------------
-
-## Loss (MSE)
-
-L = 1/2 (a3 - y)\^2\
-L = 1/2 (0.69 - 1)\^2 = 0.048
+Gradients: \[ `\frac{\partial L}{\partial w_5}`{=tex} =
+`\delta`{=tex}*{1}\^{(2)} a*{1}\^{(1)}, `\quad`{=tex}
+`\frac{\partial L}{\partial w_6}`{=tex} = `\delta`{=tex}*{1}\^{(2)}
+a*{2}\^{(1)} \] \[ `\frac{\partial L}{\partial w_7}`{=tex} =
+`\delta`{=tex}*{2}\^{(2)} a*{1}\^{(1)}, `\quad`{=tex}
+`\frac{\partial L}{\partial w_8}`{=tex} = `\delta`{=tex}*{2}\^{(2)}
+a*{2}\^{(1)} \]
 
 ------------------------------------------------------------------------
 
-## Backpropagation (FULL DETAIL)
+### Hidden Layer 1
 
-### Step 1: dL/da3
+\[ `\delta`{=tex}*{1}\^{(1)} = (`\delta`{=tex}*{1}\^{(2)} w_5 +
+`\delta`{=tex}*{2}\^{(2)} w_7) `\cdot `{=tex}a*{1}^{(1)}(1-a\_{1}^{(1)})
+\] \[ `\delta`{=tex}*{2}\^{(1)} = (`\delta`{=tex}*{1}\^{(2)} w_6 +
+`\delta`{=tex}*{2}\^{(2)} w_8) `\cdot `{=tex}a*{2}^{(1)}(1-a\_{2}^{(1)})
+\]
 
-dL/da3 = (a3 - y) = -0.31
-
-------------------------------------------------------------------------
-
-### Step 2: Sigmoid Derivative Output
-
-da3/dz3 = a3(1 - a3)\
-= 0.69(1 - 0.69) = 0.2139
-
-------------------------------------------------------------------------
-
-### Step 3: delta output
-
-delta3 = -0.31 × 0.2139 = -0.0663
+Gradients: \[ `\frac{\partial L}{\partial w_1}`{=tex} =
+`\delta`{=tex}*{1}\^{(1)} x_1, `\quad`{=tex}
+`\frac{\partial L}{\partial w_2}`{=tex} = `\delta`{=tex}*{1}\^{(1)} x_2
+\] \[ `\frac{\partial L}{\partial w_3}`{=tex} =
+`\delta`{=tex}*{2}\^{(1)} x_1, `\quad`{=tex}
+`\frac{\partial L}{\partial w_4}`{=tex} = `\delta`{=tex}*{2}\^{(1)} x_2
+\]
 
 ------------------------------------------------------------------------
 
-### Step 4: Gradient Output Weights
+## 8. Parameter Update
 
-dw9 = delta3 × a2_1 = -0.0464\
-dw10 = delta3 × a2_2 = -0.0497
-
-------------------------------------------------------------------------
-
-### Step 5: Backprop to Hidden Layer 2
-
-delta2_1 = delta3 × w9 × a2_1(1 - a2_1)\
-= (-0.0663)(0.5)(0.70)(0.30) = -0.00696
-
-delta2_2 = delta3 × w10 × a2_2(1 - a2_2)\
-= (-0.0663)(0.6)(0.75)(0.25) = -0.00746
+\[ w `\leftarrow `{=tex}w -
+`\alpha `{=tex}`\frac{\partial L}{\partial w}`{=tex} \]
 
 ------------------------------------------------------------------------
 
-### Step 6: Gradient Hidden Layer 2
+## 9. Key Takeaways
 
-dw5 = delta2_1 × a1_1\
-dw6 = delta2_1 × a1_2
-
-dw7 = delta2_2 × a1_1\
-dw8 = delta2_2 × a1_2
-
-------------------------------------------------------------------------
-
-### Step 7: Backprop to Hidden Layer 1
-
-delta1_1 = (delta2_1*w5 + delta2_2*w7) × a1_1(1 - a1_1)
-
-delta1_2 = (delta2_1*w6 + delta2_2*w8) × a1_2(1 - a1_2)
+-   Sigmoid derivative (a(1-a)) appears **explicitly in every layer
+    during backpropagation**
+-   Deep learning relies on **chain rule composition across layers**
+-   No simplification (unlike logistic regression with BCE) --- full
+    gradients are preserved
 
 ------------------------------------------------------------------------
 
-### Step 8: Gradient Hidden Layer 1
+## 10. Reproducibility
 
-dw1 = delta1_1 × x1\
-dw2 = delta1_1 × x2
-
-dw3 = delta1_2 × x1\
-dw4 = delta1_2 × x2
+This document is suitable as: - Educational reference - Portfolio
+demonstration of understanding backpropagation - Basis for implementing
+neural networks from scratch
 
 ------------------------------------------------------------------------
-
-## Update Weight
-
-w = w - α × gradient
-
-------------------------------------------------------------------------
-
-## Insight Penting
-
--   Turunan sigmoid muncul di SETIAP layer saat backprop
--   Tidak ada simplifikasi seperti logistic regression
--   Chain rule digunakan penuh
-
-------------------------------------------------------------------------
-
-## Kesimpulan
-
--   Forward → hanya sigmoid\
--   Backprop → sigmoid derivative muncul\
--   Deep learning = chain rule berlapis
